@@ -5,28 +5,29 @@ import (
 	"unicode"
 )
 
-type Stack []interface{}
+type Stack[T any] []T
 
-func (s *Stack) push(x interface{}) {
+func (s *Stack[T]) push(x T) {
 	*s = append(*s, x)
 }
 
-func (s *Stack) pop() interface{} {
+func (s *Stack[T]) pop() T {
 	l := len(*s)
 	if l == 0 {
-		return nil
+		var res T
+		return res
 	}
 	res := (*s)[l-1]
 	*s = (*s)[:l-1]
 	return res
 }
 
-func (s *Stack) top() interface{} {
+func (s *Stack[T]) top() T {
 	l := len(*s)
 	return (*s)[l-1]
 }
 
-func (s *Stack) isEmpty() bool {
+func (s *Stack[T]) isEmpty() bool {
 	l := len(*s)
 	return l == 0
 }
@@ -46,8 +47,8 @@ func compare(op1, op2 int32) bool {
 }
 
 func genExpTree(s string) *Node {
-	var stNodes Stack
-	var stOps Stack
+	var stNodes Stack[*Node]
+	var stOps Stack[int32]
 
 	for _, ch := range s {
 		if unicode.IsDigit(ch) {
@@ -56,17 +57,17 @@ func genExpTree(s string) *Node {
 			stOps.push(ch)
 		} else if ch == ')' {
 			for stOps.top() != '(' {
-				right := stNodes.pop().(*Node)
-				left := stNodes.pop().(*Node)
-				op := stOps.pop().(int32)
+				right := stNodes.pop()
+				left := stNodes.pop()
+				op := stOps.pop()
 				stNodes.push(&Node{op, left, right})
 			}
 			stOps.pop()
 		} else if ch == '+' || ch == '-' || ch == '*' || ch == '/' {
-			for !stOps.isEmpty() && compare(stOps.top().(int32), ch) {
-				right := stNodes.pop().(*Node)
-				left := stNodes.pop().(*Node)
-				op := stOps.pop().(int32)
+			for !stOps.isEmpty() && compare(stOps.top(), ch) {
+				right := stNodes.pop()
+				left := stNodes.pop()
+				op := stOps.pop()
 				stNodes.push(&Node{op, left, right})
 			}
 			stOps.push(ch)
@@ -74,13 +75,13 @@ func genExpTree(s string) *Node {
 	}
 
 	for !stOps.isEmpty() {
-		right := stNodes.pop().(*Node)
-		left := stNodes.pop().(*Node)
-		op := stOps.pop().(int32)
+		right := stNodes.pop()
+		left := stNodes.pop()
+		op := stOps.pop()
 		stNodes.push(&Node{op, left, right})
 	}
 
-	return stNodes.top().(*Node)
+	return stNodes.top()
 }
 
 func main() {
