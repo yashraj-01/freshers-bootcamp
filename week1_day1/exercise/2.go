@@ -14,8 +14,7 @@ func (s *Stack[T]) push(x T) {
 func (s *Stack[T]) pop() T {
 	l := len(*s)
 	if l == 0 {
-		var res T
-		return res
+		return *new(T)
 	}
 	res := (*s)[l-1]
 	*s = (*s)[:l-1]
@@ -38,7 +37,7 @@ type Node struct {
 	right *Node
 }
 
-// Returns true if op1 is a operator and priority(op1) >= priority(op2)
+// Returns true if op1 is an operator and priority(op1) >= priority(op2)
 func compare(op1, op2 int32) bool {
 	if op1 == '(' || op1 == ')' {
 		return false
