@@ -1,4 +1,4 @@
-package Models
+package model
 
 type User struct {
 	Id      uint   `json:"id"`
@@ -6,8 +6,4 @@ type User struct {
 	Email   string `json:"email"`
 	Phone   string `json:"phone"`
 	Address string `json:"address"`
-}
-
-func (b *User) TableName() string {
-	return "user"
 }

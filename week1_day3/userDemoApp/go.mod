@@ -1,4 +1,4 @@
-module exercise1
+module yash/userDemoApp
 
 go 1.21.1
 
