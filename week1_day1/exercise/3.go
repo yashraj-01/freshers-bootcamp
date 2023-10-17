@@ -44,6 +44,7 @@ func main() {
 	e1 := Fulltimer{"Yash", 1000, 30}
 	e2 := Contractor{"Pavan", 500, 24}
 	e3 := Freelancer{"Naman", 100, 150}
+
 	fmt.Println("Salary of", e1.name, "is", getSalary(e1))
 	fmt.Println("Salary of", e2.name, "is", getSalary(e2))
 	fmt.Println("Salary of", e3.name, "is", getSalary(e3))

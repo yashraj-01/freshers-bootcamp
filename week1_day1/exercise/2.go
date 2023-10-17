@@ -48,6 +48,7 @@ func compare(op1, op2 int32) bool {
 func genExpTree(s string) *Node {
 	var stNodes Stack[*Node]
 	var stOps Stack[int32]
+
 	for _, ch := range s {
 		if unicode.IsDigit(ch) {
 			stNodes.push(&Node{ch, nil, nil})
@@ -71,18 +72,22 @@ func genExpTree(s string) *Node {
 			stOps.push(ch)
 		}
 	}
+
 	for !stOps.isEmpty() {
 		right := stNodes.pop()
 		left := stNodes.pop()
 		op := stOps.pop()
 		stNodes.push(&Node{op, left, right})
 	}
+
 	return stNodes.top()
 }
 
 func main() {
 	s := "1+2+3+4+5"
+	
 	expTree := genExpTree(s)
+
 	fmt.Println("In-order traversal:")
 	inOrder(expTree)
 	fmt.Println("\nPost-order traversal:")
