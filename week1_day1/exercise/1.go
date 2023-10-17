@@ -41,6 +41,7 @@ func (m *Matrix) printAsJson() {
 func main() {
 	mat1 := [][]int{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}
 	mat2 := [][]int{{11, 21, 31}, {41, 51, 61}, {71, 81, 91}}
+
 	m1 := Matrix{3, 3, mat1}
 	m2 := Matrix{3, 3, mat2}
 

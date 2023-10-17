@@ -85,7 +85,9 @@ func genExpTree(s string) *Node {
 
 func main() {
 	s := "1+2+3+4+5"
+	
 	expTree := genExpTree(s)
+
 	fmt.Println("In-order traversal:")
 	inOrder(expTree)
 	fmt.Println("\nPost-order traversal:")
