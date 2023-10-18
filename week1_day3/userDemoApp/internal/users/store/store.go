@@ -7,11 +7,13 @@ import (
 
 // Store provides functionality for working with the database.
 type Store struct {
-	db gorm.DB
+	db *gorm.DB
 }
 
 // New will instantiate a new instance of Store.
-func New(db gorm.DB) *Store {
+func New(db *gorm.DB) *Store {
+	db.AutoMigrate(&model.User{})
+
 	return &Store{
 		db: db,
 	}
@@ -19,11 +21,11 @@ func New(db gorm.DB) *Store {
 
 // GetAllUsers Fetch all user data
 func (s *Store) GetAllUsers() (*[]model.User, error) {
-	var users *[]model.User
-	if err := s.db.Find(users).Error; err != nil {
+	var users []model.User
+	if err := s.db.Find(&users).Error; err != nil {
 		return nil, err
 	}
-	return users, nil
+	return &users, nil
 }
 
 // CreateUser ... Insert New data
@@ -35,10 +37,10 @@ func (s *Store) CreateUser(user *model.User) error {
 }
 
 // GetUserByID ... Fetch only one user by Id
-func (s *Store) GetUserByID(id string) (*model.User, error) {
-	var user *model.User
-	if err := s.db.Where("id = ?", id).First(user).Error; err != nil {
-		return nil, err
+func (s *Store) GetUserByID(id string) (model.User, error) {
+	var user model.User
+	if err := s.db.Where("id = ?", id).First(&user).Error; err != nil {
+		return model.User{}, err
 	}
 	return user, nil
 }

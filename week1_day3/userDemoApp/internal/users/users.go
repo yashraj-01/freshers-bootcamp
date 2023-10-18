@@ -1,19 +1,26 @@
 package users
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"yash/userDemoApp/internal/users/model"
-	"yash/userDemoApp/internal/users/store"
 )
 
+// Store represents a type for storing a user in a database.
+type Store interface {
+	GetAllUsers() (*[]model.User, error)
+	CreateUser(user *model.User) error
+	GetUserByID(id string) (model.User, error)
+	UpdateUser(user *model.User) error
+	DeleteUser(user *model.User, id string) error
+}
+
 type Users struct {
-	store store.Store
+	store Store
 }
 
 // New will instantiate a new instance of Users.
-func (u *Users) New(s store.Store) *Users {
+func New(s Store) *Users {
 	return &Users{
 		store: s,
 	}
@@ -25,20 +32,19 @@ func (u *Users) GetUsers(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, *users)
+		c.JSON(http.StatusOK, users)
 	}
 }
 
 // CreateUser ... Create User
 func (u *Users) CreateUser(c *gin.Context) {
-	var user *model.User
-	c.BindJSON(user)
-	err := u.store.CreateUser(user)
+	var user model.User
+	c.BindJSON(&user)
+	err := u.store.CreateUser(&user)
 	if err != nil {
-		fmt.Println(err.Error())
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, *user)
+		c.JSON(http.StatusOK, user)
 	}
 }
 
@@ -49,7 +55,7 @@ func (u *Users) GetUserByID(c *gin.Context) {
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, *user)
+		c.JSON(http.StatusOK, user)
 	}
 }
 
@@ -58,22 +64,22 @@ func (u *Users) UpdateUser(c *gin.Context) {
 	id := c.Params.ByName("id")
 	user, err := u.store.GetUserByID(id)
 	if err != nil {
-		c.JSON(http.StatusNotFound, *user)
+		c.JSON(http.StatusNotFound, user)
 	}
-	c.BindJSON(user)
-	err = u.store.UpdateUser(user)
+	c.BindJSON(&user)
+	err = u.store.UpdateUser(&user)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
-		c.JSON(http.StatusOK, *user)
+		c.JSON(http.StatusOK, user)
 	}
 }
 
 // DeleteUser ... Delete the user
 func (u *Users) DeleteUser(c *gin.Context) {
-	var user *model.User
+	var user model.User
 	id := c.Params.ByName("id")
-	err := u.store.DeleteUser(user, id)
+	err := u.store.DeleteUser(&user, id)
 	if err != nil {
 		c.AbortWithStatus(http.StatusNotFound)
 	} else {
