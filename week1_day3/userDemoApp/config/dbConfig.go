@@ -1,6 +1,9 @@
 package config
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/jinzhu/gorm"
+)
 
 type dbConfig struct {
 	host     string
@@ -8,6 +11,10 @@ type dbConfig struct {
 	user     string
 	dbName   string
 	password string
+}
+
+func New() (*gorm.DB, error) {
+	return gorm.Open("mysql", buildDSN())
 }
 
 func configureDb() *dbConfig {
@@ -20,7 +27,7 @@ func configureDb() *dbConfig {
 	}
 }
 
-func BuildDSN() string {
+func buildDSN() string {
 	config := configureDb()
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8&parseTime=True&loc=Local",
 		config.user,

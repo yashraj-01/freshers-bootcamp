@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
 	"yash/userDemoApp/config"
 	"yash/userDemoApp/internal/core/listeners/http"
 	httpTransport "yash/userDemoApp/internal/transport/http"
@@ -17,7 +16,7 @@ func main() {
 }
 
 func initDatabase() {
-	db, err := gorm.Open("mysql", config.BuildDSN())
+	db, err := config.New()
 	if err != nil {
 		fmt.Println("Status:", err)
 	}
