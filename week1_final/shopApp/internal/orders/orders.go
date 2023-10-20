@@ -34,8 +34,8 @@ func (o *Orders) GetOrders(c *gin.Context) {
 	}
 }
 
-// CreateOrders ... Create Order
-func (o *Orders) CreateOrders(c *gin.Context) {
+// CreateOrder ... Create Order
+func (o *Orders) CreateOrder(c *gin.Context) {
 	var order model.Order
 	c.BindJSON(&order)
 	err := o.store.CreateOrder(&order)

@@ -35,8 +35,8 @@ func (p *Products) GetProducts(c *gin.Context) {
 	}
 }
 
-// CreateProducts ... Create Product
-func (p *Products) CreateProducts(c *gin.Context) {
+// CreateProduct ... Create Product
+func (p *Products) CreateProduct(c *gin.Context) {
 	var product model.Product
 	c.BindJSON(&product)
 	err := p.store.CreateProduct(&product)

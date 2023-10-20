@@ -23,8 +23,8 @@ func New(s Store) *Customers {
 	}
 }
 
-// CreateCustomers ... Create Customer
-func (c *Customers) CreateCustomers(context *gin.Context) {
+// CreateCustomer ... Create Customer
+func (c *Customers) CreateCustomer(context *gin.Context) {
 	var customer model.Customer
 	context.BindJSON(&customer)
 	err := c.store.CreateCustomer(&customer)
