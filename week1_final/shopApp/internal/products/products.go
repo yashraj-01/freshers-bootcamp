@@ -6,7 +6,7 @@ import (
 	"yash/shopApp/internal/products/model"
 )
 
-// Store represents a type for storing a user in a database.
+// Store represents a type for storing a product in a database.
 type Store interface {
 	GetAllProducts() (*[]model.Product, error)
 	CreateProduct(product *model.Product) error
@@ -29,7 +29,7 @@ func New(s Store) *Products {
 func (p *Products) GetProducts(c *gin.Context) {
 	products, err := p.store.GetAllProducts()
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		c.JSON(http.StatusOK, products)
 	}
@@ -41,7 +41,7 @@ func (p *Products) CreateProduct(c *gin.Context) {
 	c.BindJSON(&product)
 	err := p.store.CreateProduct(&product)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		c.JSON(http.StatusOK, product)
 	}
@@ -52,7 +52,7 @@ func (p *Products) GetProductByID(c *gin.Context) {
 	id := c.Params.ByName("id")
 	product, err := p.store.GetProductByID(id)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		c.JSON(http.StatusOK, product)
 	}
@@ -62,13 +62,15 @@ func (p *Products) GetProductByID(c *gin.Context) {
 func (p *Products) UpdateProduct(c *gin.Context) {
 	id := c.Params.ByName("id")
 	product, err := p.store.GetProductByID(id)
-	if err != nil || product == nil {
+	if err != nil {
+		c.AbortWithStatus(http.StatusBadRequest)
+	} else if product == nil {
 		c.JSON(http.StatusNotFound, product)
 	} else {
 		c.BindJSON(&product)
 		err = p.store.UpdateProduct(product)
 		if err != nil {
-			c.AbortWithStatus(http.StatusNotFound)
+			c.AbortWithStatus(http.StatusInternalServerError)
 		} else {
 			c.JSON(http.StatusOK, product)
 		}

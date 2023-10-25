@@ -15,10 +15,10 @@ import (
 
 func main() {
 	fmt.Println("Running...")
-	initDatabase()
+	setupDatabase()
 }
 
-func initDatabase() {
+func setupDatabase() {
 	db, err := config.New()
 
 	if err != nil {
@@ -28,8 +28,15 @@ func initDatabase() {
 	}
 
 	defer func() {
-		dbInstance, _ := db.DB()
-		_ = dbInstance.Close()
+		dbInstance, err := db.DB()
+		if err != nil {
+			fmt.Println("Failed to get database instance: ", err)
+		} else {
+			err = dbInstance.Close()
+			if err != nil {
+				fmt.Println("Failed to close the database: ", err)
+			}
+		}
 	}()
 
 	customersStore := cStore.New(db)

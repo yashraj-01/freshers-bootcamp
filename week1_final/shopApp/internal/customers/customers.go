@@ -6,7 +6,7 @@ import (
 	"yash/shopApp/internal/customers/model"
 )
 
-// Store represents a type for storing a user in a database.
+// Store represents a type for storing a customer in a database.
 type Store interface {
 	CreateCustomer(customer *model.Customer) error
 	GetCustomerByID(id string) (*model.Customer, error)
@@ -29,7 +29,7 @@ func (c *Customers) CreateCustomer(context *gin.Context) {
 	context.BindJSON(&customer)
 	err := c.store.CreateCustomer(&customer)
 	if err != nil {
-		context.AbortWithStatus(http.StatusNotFound)
+		context.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		context.JSON(http.StatusOK, customer)
 	}
@@ -40,7 +40,7 @@ func (c *Customers) GetCustomerByID(context *gin.Context) {
 	id := context.Params.ByName("id")
 	customer, err := c.store.GetCustomerByID(id)
 	if err != nil {
-		context.AbortWithStatus(http.StatusNotFound)
+		context.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		context.JSON(http.StatusOK, customer)
 	}

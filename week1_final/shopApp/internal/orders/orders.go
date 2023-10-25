@@ -6,7 +6,7 @@ import (
 	"yash/shopApp/internal/orders/model"
 )
 
-// Store represents a type for storing a user in a database.
+// Store represents a type for storing an order in a database.
 type Store interface {
 	GetAllOrders() (*[]model.Order, error)
 	CreateOrder(order *model.Order) error
@@ -28,7 +28,7 @@ func New(s Store) *Orders {
 func (o *Orders) GetOrders(c *gin.Context) {
 	orders, err := o.store.GetAllOrders()
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		c.JSON(http.StatusOK, orders)
 	}
@@ -40,7 +40,7 @@ func (o *Orders) CreateOrder(c *gin.Context) {
 	c.BindJSON(&order)
 	err := o.store.CreateOrder(&order)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		c.JSON(http.StatusOK, order)
 	}
@@ -51,7 +51,7 @@ func (o *Orders) GetOrderByID(c *gin.Context) {
 	id := c.Params.ByName("id")
 	order, err := o.store.GetOrderByID(id)
 	if err != nil {
-		c.AbortWithStatus(http.StatusNotFound)
+		c.AbortWithStatus(http.StatusBadRequest)
 	} else {
 		c.JSON(http.StatusOK, order)
 	}
